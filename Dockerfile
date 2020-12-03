@@ -19,8 +19,8 @@ ENV LOG=yes \
     AUTOUPDATE=no \
     GOTIFYURL= \
     GOTIFYTOKEN=
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["-h"]
+# ENTRYPOINT ["/entrypoint.sh"]
+# CMD ["-h"]
 COPY entrypoint.sh /
 RUN apk add -q --progress --update --no-cache ca-certificates ffmpeg python3 && \
     rm -rf /var/cache/apk/*
@@ -35,7 +35,9 @@ RUN apk add -q --progress --update --no-cache --virtual deps wget gnupg && \
     [ $(sha256sum /usr/local/bin/youtube-dl | cut -d " " -f 1) = "$SHA256" ] && \
     apk del deps && \
     rm -rf /var/cache/apk/* /tmp/youtube-dl.sig && \
-    chown 1000 /entrypoint.sh /usr/local/bin/youtube-dl && \
+    mkdir /.cache && \
+    chown 1000 /entrypoint.sh /usr/local/bin/youtube-dl /.cache && \
     chmod 500 /entrypoint.sh && \
-    chmod 700 /usr/local/bin/youtube-dl
+    chmod 711 /usr/local/bin/youtube-dl
+
 USER 1000
